@@ -7,7 +7,7 @@ import configureStore from './reducers/index';
 
 const RNRedux = () => (
     <Provider store={configureStore()}>
-        <SafeAreaView style={{flex: 1, backgroundColor: 'black'}}>
+        <SafeAreaView style={{flex: 1}}>
             <App />
         </SafeAreaView>
     </Provider>

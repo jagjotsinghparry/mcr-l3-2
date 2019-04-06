@@ -7,6 +7,7 @@ import {
     Dimensions
 } from 'react-native';
 import {connect} from 'react-redux';
+import moment from 'moment';
 import {loadAlbums} from './actions/album';
 import Loader from './components/Loader';
 
@@ -22,15 +23,21 @@ class App extends Component {
     }
 
     render() {
-        if(this.props.loading) {
-            return <Loader />;
+        if (this.props.loading) {
+            return <Loader/>;
         }
 
         return (
-            <View style={{flex: 1, backgroundColor: 'black'}}>
+            <View style={{flex: 1}}>
                 <FlatList
-                    renderItem={({item}) => {
-                        return <View style={{ width: (width / 2) - 2 }}>
+                    renderItem={({item, index}) => {
+                        return <View
+                            style={{
+                                width: (width / 2) - 1,
+                                marginRight: (index % 2 === 0) ? 1 : 0,
+                                marginLeft: (index % 2 === 1) ? 1 : 0
+                            }}
+                        >
                             <Image
                                 source={{uri: this.last(item['im:image']).label}}
                                 style={{
@@ -39,7 +46,20 @@ class App extends Component {
                                 }}
                                 resizeMode={'contain'}
                             />
-                            <Text style={{color: 'white'}}>{item['im:name']['label']}</Text>
+                            <View
+                                style={{width: (width / 2) - 1, padding: 7}}
+                            >
+                                <Text
+                                    numberOfLines={1}
+                                    style={{flex: 1, fontWeight: 'bold'}}
+                                >
+                                    {item['im:name']['label']}
+                                </Text>
+                                <Text>
+                                    {item['im:artist']['label']}
+                                </Text>
+                                <Text>{item['category']['attributes']['term']} · {moment(item['im:releaseDate']['label']).format('YYYY')}</Text>
+                            </View>
                         </View>
                     }}
                     data={this.props.albums}
@@ -47,7 +67,7 @@ class App extends Component {
                     initialNumToRender={8}
                     numColumns={2}
                     ItemSeparatorComponent={() => {
-                        return <View style={{ backgroundColor: 'red', width: width, height: 2 }} />
+                        return <View style={{backgroundColor: 'white', width: width, height: 2}}/>
                     }}
                 />
             </View>
