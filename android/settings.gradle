@@ -1,0 +1,3 @@
+rootProject.name = 'mcr_l3_2'
+
+include ':app'
