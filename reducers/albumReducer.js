@@ -16,7 +16,15 @@ const albumReducer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 items: action.payload
-            }
+            };
+
+        case "LOAD_ALBUMS_FAILURE":
+            return {
+                ...state,
+                loading: false,
+                error: action.payload,
+                items: []
+            };
 
         default:
             return state;

@@ -11,7 +11,8 @@ export const loadAlbums = (dispatch) => {
     fetch('https://itunes.apple.com/us/rss/topalbums/limit=100/json')
         .then(handleErrors)
         .then(res => res.json())
-        .then(res => dispatch({type: LOAD_ALBUMS_SUCCESS, payload: res.feed.entry}));
+        .then(res => dispatch({type: LOAD_ALBUMS_SUCCESS, payload: res.feed.entry}))
+        .catch(err => dispatch({type: LOAD_ALBUMS_FAILURE, payload: err}));
 };
 
 
