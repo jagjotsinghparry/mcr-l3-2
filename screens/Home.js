@@ -108,11 +108,17 @@ class Home extends Component {
                         <TouchableOpacity onPress={() => this.props.sortAlbums('price', "DESC")}>
                             <Text>Price DESC</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity>
-                            <Text>Artist</Text>
+                        <TouchableOpacity onPress={() => this.props.sortAlbums('artist', 'ASC')}>
+                            <Text>Artist ASC</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity>
-                            <Text>Release Date</Text>
+                        <TouchableOpacity onPress={() => this.props.sortAlbums('artist', 'DESC')}>
+                            <Text>Artist DESC</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.props.sortAlbums('releaseDate', 'ASC')}>
+                            <Text>Release Date ASC</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.props.sortAlbums('releaseDate', 'DESC')}>
+                            <Text>Release Date DESC</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => this.props.toggleModal()}

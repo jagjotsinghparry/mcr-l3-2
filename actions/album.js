@@ -4,7 +4,11 @@ import {
     LOAD_ALBUMS_FAILURE,
     TOGGLE_MODAL,
     SORT_ALBUMS_PRICE_ASC,
-    SORT_ALBUMS_PRICE_DESC
+    SORT_ALBUMS_PRICE_DESC,
+    SORT_ALBUMS_ARTIST_ASC,
+    SORT_ALBUMS_ARTIST_DESC,
+    SORT_ALBUMS_RELEASE_DATE_ASC,
+    SORT_ALBUMS_RELEASE_DATE_DESC
 } from './types';
 
 export const loadAlbums = (dispatch) => {
@@ -30,6 +34,23 @@ export const sortAlbums = (attribute, direction, dispatch) => {
             } else {
                 dispatch({type: SORT_ALBUMS_PRICE_DESC});
             }
+            break;
+
+        case 'artist':
+            if(direction === 'ASC') {
+                dispatch({type: SORT_ALBUMS_ARTIST_ASC});
+            } else {
+                dispatch({type: SORT_ALBUMS_ARTIST_DESC});
+            }
+            break;
+
+        case 'releaseDate':
+            if(direction === 'ASC') {
+                dispatch({type: SORT_ALBUMS_RELEASE_DATE_ASC});
+            } else {
+                dispatch({type: SORT_ALBUMS_RELEASE_DATE_DESC});
+            }
+            break;
     }
 };
 

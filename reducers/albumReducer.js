@@ -1,3 +1,5 @@
+import moment from "moment";
+
 const initialState = {
     items: [],
     loading: false,
@@ -5,18 +7,18 @@ const initialState = {
     originalItems: []
 };
 
-function comparePriceAsc(a, b) {
-    if (parseFloat(a['im:price']['attributes']['amount']) < parseFloat(b['im:price']['attributes']['amount']))
+function compareAsc(a, b) {
+    if (a < b)
         return -1;
-    if (parseFloat(a['im:price']['attributes']['amount']) > parseFloat(b['im:price']['attributes']['amount']))
+    if (a > b)
         return 1;
     return 0;
 }
 
-function comparePriceDesc(a, b) {
-    if (parseFloat(a['im:price']['attributes']['amount']) < parseFloat(b['im:price']['attributes']['amount']))
+function compareDesc(a, b) {
+    if (a < b)
         return 1;
-    if (parseFloat(a['im:price']['attributes']['amount']) > parseFloat(b['im:price']['attributes']['amount']))
+    if (a > b)
         return -1;
     return 0;
 }
@@ -52,7 +54,11 @@ const albumReducer = (state = initialState, action) => {
             };
 
         case "SORT_ALBUMS_PRICE_ASC":
-            var newItems = state.items.sort(comparePriceAsc);
+            var newItems = state.items.sort((a, b) => {
+                a = parseFloat(a['im:price']['attributes']['amount']);
+                b = parseFloat(b['im:price']['attributes']['amount']);
+                return compareAsc(a, b);
+            });
             return {
                 ...state,
                 items: newItems,
@@ -60,7 +66,59 @@ const albumReducer = (state = initialState, action) => {
             };
 
         case "SORT_ALBUMS_PRICE_DESC":
-            var newItems = state.items.sort(comparePriceDesc);
+            var newItems = state.items.sort((a, b) => {
+                a = parseFloat(a['im:price']['attributes']['amount']);
+                b = parseFloat(b['im:price']['attributes']['amount']);
+                return compareDesc(a, b);
+            });
+            return {
+                ...state,
+                items: newItems,
+                modal: false
+            };
+
+        case "SORT_ALBUMS_ARTIST_ASC":
+            var newItems = state.items.sort((a, b) => {
+               a = a['im:artist']['label'].toLowerCase();
+               b = b['im:artist']['label'].toLowerCase();
+               return compareAsc(a, b);
+            });
+            return {
+                ...state,
+                items: newItems,
+                modal: false
+            };
+
+        case "SORT_ALBUMS_ARTIST_DESC":
+            var newItems = state.items.sort((a, b) => {
+                a = a['im:artist']['label'].toLowerCase();
+                b = b['im:artist']['label'].toLowerCase();
+                return compareDesc(a, b);
+            });
+            return {
+                ...state,
+                items: newItems,
+                modal: false
+            };
+
+        case "SORT_ALBUMS_RELEASE_DATE_ASC":
+            var newItems = state.items.sort((a, b) => {
+                a = parseInt(moment(a['im:releaseDate']['label']).format('YYYY'));
+                b = parseInt(moment(b['im:releaseDate']['label']).format('YYYY'));
+                return compareAsc(a, b);
+            });
+            return {
+                ...state,
+                items: newItems,
+                modal: false
+            };
+
+        case "SORT_ALBUMS_RELEASE_DATE_DESC":
+            var newItems = state.items.sort((a, b) => {
+                a = parseInt(moment(a['im:releaseDate']['label']).format('YYYY'));
+                b = parseInt(moment(b['im:releaseDate']['label']).format('YYYY'));
+                return compareDesc(a, b);
+            });
             return {
                 ...state,
                 items: newItems,
