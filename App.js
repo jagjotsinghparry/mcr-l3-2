@@ -1,49 +1,71 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {
+    Text,
+    View,
+    FlatList,
+    Image,
+    Dimensions
+} from 'react-native';
+import {connect} from 'react-redux';
+import {loadAlbums} from './actions/album';
+import Loader from './components/Loader';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+let {width} = Dimensions.get('window');
 
-type Props = {};
-export default class App extends Component<Props> {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
-    );
-  }
+class App extends Component {
+    componentDidMount() {
+        this.props.loadAlbums();
+    }
+
+    last(arr) {
+        return arr[arr.length - 1]
+    }
+
+    render() {
+        if(this.props.loading) {
+            return <Loader />;
+        }
+
+        return (
+            <View style={{flex: 1, backgroundColor: 'black'}}>
+                <FlatList
+                    renderItem={({item}) => {
+                        return <View style={{ width: (width / 2) - 2 }}>
+                            <Image
+                                source={{uri: this.last(item['im:image']).label}}
+                                style={{
+                                    height: width / 2,
+                                    width: width / 2
+                                }}
+                                resizeMode={'contain'}
+                            />
+                            <Text style={{color: 'white'}}>{item['im:name']['label']}</Text>
+                        </View>
+                    }}
+                    data={this.props.albums}
+                    keyExtractor={(item, index) => index.toString()}
+                    initialNumToRender={8}
+                    numColumns={2}
+                    ItemSeparatorComponent={() => {
+                        return <View style={{ backgroundColor: 'red', width: width, height: 2 }} />
+                    }}
+                />
+            </View>
+        );
+    }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+const mapStateToProps = state => {
+    return {
+        albums: state.albums.items,
+        loading: state.albums.loading
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        loadAlbums: () => loadAlbums(dispatch)
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
