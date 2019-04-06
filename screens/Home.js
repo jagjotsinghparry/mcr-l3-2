@@ -7,7 +7,9 @@ import {
     Dimensions,
     Button,
     Modal,
-    TextInput
+    TextInput,
+    TouchableOpacity,
+    StyleSheet
 } from 'react-native';
 import {connect} from 'react-redux';
 import moment from 'moment';
@@ -47,7 +49,7 @@ class Home extends Component {
 
     componentDidMount() {
         this.props.loadAlbums();
-        this.props.navigation.setParams({ showModal: this.props.toggleModal });
+        this.props.navigation.setParams({showModal: this.props.toggleModal});
     }
 
     last(arr) {
@@ -59,33 +61,41 @@ class Home extends Component {
             return <Loader/>;
         }
 
+        if (this.props.error) {
+            return <View>
+                <TouchableOpacity onPress={this.props.loadAlbums}>
+                    <Text>There was some error, click here to try again.</Text>
+                </TouchableOpacity>
+            </View>
+        }
+
         return (
             <View style={{flex: 1}}>
                 <TextInput
                     placeholder={'Search Album'}
-                    style={{ height: 40, margin: 10, borderWidth: 1, borderColor: 'black', padding: 5 }}
+                    style={styles.searchInput}
                     onChangeText={this.props.searchAlbums}
                     value={this.props.searchQuery}
                 />
                 <FlatList
                     renderItem={({item, index}) => {
-                        return <View
+                        return <TouchableOpacity
                             style={{
                                 width: (width / 2) - 1,
                                 marginRight: (index % 2 === 0) ? 1 : 0,
                                 marginLeft: (index % 2 === 1) ? 1 : 0
                             }}
+                            onPress={() => {
+                                this.props.navigation.navigate('Album', {album: item});
+                            }}
                         >
                             <Image
                                 source={{uri: this.last(item['im:image']).label}}
-                                style={{
-                                    height: width / 2,
-                                    width: width / 2
-                                }}
+                                style={styles.albumImage}
                                 resizeMode={'contain'}
                             />
                             <View
-                                style={{width: (width / 2) - 1, padding: 7}}
+                                style={styles.descriptionContainer}
                             >
                                 <Text
                                     numberOfLines={1}
@@ -98,7 +108,7 @@ class Home extends Component {
                                 </Text>
                                 <Text>{item['category']['attributes']['term']} · {moment(item['im:releaseDate']['label']).format('YYYY')}</Text>
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     }}
                     data={this.props.albums}
                     keyExtractor={(item, index) => index.toString()}
@@ -112,7 +122,7 @@ class Home extends Component {
                     visible={this.props.modal}
                     onRequestClose={() => this.props.toggleModal()}
                 >
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={styles.modalContainer}>
                         <Text style={{fontWeight: 'bold', marginVertical: 5}}>Sort By:</Text>
                         <Button
                             onPress={() => this.props.sortAlbums('price', "ASC")}
@@ -154,12 +164,36 @@ class Home extends Component {
     }
 }
 
+const styles = StyleSheet.create({
+    searchInput: {
+        height: 40,
+        margin: 10,
+        borderWidth: 1,
+        borderColor: 'black',
+        padding: 5
+    },
+    albumImage: {
+        height: width / 2,
+        width: width / 2
+    },
+    descriptionContainer: {
+        width: (width / 2) - 1,
+        padding: 7
+    },
+    modalContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
+});
+
 const mapStateToProps = state => {
     return {
         albums: state.albums.items,
         loading: state.albums.loading,
         modal: state.albums.modal,
-        searchQuery: state.albums.searchQuery
+        searchQuery: state.albums.searchQuery,
+        error: state.albums.error
     }
 };
 

@@ -5,7 +5,8 @@ const initialState = {
     loading: false,
     modal: false,
     originalItems: [],
-    searchQuery: ''
+    searchQuery: '',
+    error: null
 };
 
 function compareAsc(a, b) {
@@ -24,19 +25,20 @@ function compareDesc(a, b) {
     return 0;
 }
 
-function titleSearch(objList, text){
-    if(undefined === text || text === '' ) return objList;
+function titleSearch(objList, text) {
+    if (undefined === text || text === '') return objList;
     return objList.filter(product => {
         return (product['im:name']['label'].toString().toLowerCase().indexOf(text.toLowerCase()) > -1);
     });
 }
 
 const albumReducer = (state = initialState, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case "LOAD_ALBUMS_BEGIN":
             return {
                 ...state,
-                loading: true
+                loading: true,
+                error: null
             };
 
         case "LOAD_ALBUMS_SUCCESS":

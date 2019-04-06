@@ -29,9 +29,9 @@ export const toggleModal = () => {
 };
 
 export const sortAlbums = (attribute, direction, dispatch) => {
-    switch(attribute) {
+    switch (attribute) {
         case 'price':
-            if(direction === "ASC") {
+            if (direction === "ASC") {
                 dispatch({type: SORT_ALBUMS_PRICE_ASC});
             } else {
                 dispatch({type: SORT_ALBUMS_PRICE_DESC});
@@ -39,7 +39,7 @@ export const sortAlbums = (attribute, direction, dispatch) => {
             break;
 
         case 'artist':
-            if(direction === 'ASC') {
+            if (direction === 'ASC') {
                 dispatch({type: SORT_ALBUMS_ARTIST_ASC});
             } else {
                 dispatch({type: SORT_ALBUMS_ARTIST_DESC});
@@ -47,7 +47,7 @@ export const sortAlbums = (attribute, direction, dispatch) => {
             break;
 
         case 'releaseDate':
-            if(direction === 'ASC') {
+            if (direction === 'ASC') {
                 dispatch({type: SORT_ALBUMS_RELEASE_DATE_ASC});
             } else {
                 dispatch({type: SORT_ALBUMS_RELEASE_DATE_DESC});
