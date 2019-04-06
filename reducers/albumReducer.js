@@ -4,7 +4,8 @@ const initialState = {
     items: [],
     loading: false,
     modal: false,
-    originalItems: []
+    originalItems: [],
+    searchQuery: ''
 };
 
 function compareAsc(a, b) {
@@ -21,6 +22,13 @@ function compareDesc(a, b) {
     if (a > b)
         return -1;
     return 0;
+}
+
+function titleSearch(objList, text){
+    if(undefined === text || text === '' ) return objList;
+    return objList.filter(product => {
+        return (product['im:name']['label'].toString().toLowerCase().indexOf(text.toLowerCase()) > -1);
+    });
 }
 
 const albumReducer = (state = initialState, action) => {
@@ -54,7 +62,7 @@ const albumReducer = (state = initialState, action) => {
             };
 
         case "SORT_ALBUMS_PRICE_ASC":
-            var newItems = state.items.sort((a, b) => {
+            var newItems = state.originalItems.slice(0).sort((a, b) => {
                 a = parseFloat(a['im:price']['attributes']['amount']);
                 b = parseFloat(b['im:price']['attributes']['amount']);
                 return compareAsc(a, b);
@@ -66,7 +74,7 @@ const albumReducer = (state = initialState, action) => {
             };
 
         case "SORT_ALBUMS_PRICE_DESC":
-            var newItems = state.items.sort((a, b) => {
+            var newItems = state.originalItems.slice(0).sort((a, b) => {
                 a = parseFloat(a['im:price']['attributes']['amount']);
                 b = parseFloat(b['im:price']['attributes']['amount']);
                 return compareDesc(a, b);
@@ -78,10 +86,10 @@ const albumReducer = (state = initialState, action) => {
             };
 
         case "SORT_ALBUMS_ARTIST_ASC":
-            var newItems = state.items.sort((a, b) => {
-               a = a['im:artist']['label'].toLowerCase();
-               b = b['im:artist']['label'].toLowerCase();
-               return compareAsc(a, b);
+            var newItems = state.originalItems.slice(0).sort((a, b) => {
+                a = a['im:artist']['label'].toLowerCase();
+                b = b['im:artist']['label'].toLowerCase();
+                return compareAsc(a, b);
             });
             return {
                 ...state,
@@ -90,7 +98,7 @@ const albumReducer = (state = initialState, action) => {
             };
 
         case "SORT_ALBUMS_ARTIST_DESC":
-            var newItems = state.items.sort((a, b) => {
+            var newItems = state.originalItems.slice(0).sort((a, b) => {
                 a = a['im:artist']['label'].toLowerCase();
                 b = b['im:artist']['label'].toLowerCase();
                 return compareDesc(a, b);
@@ -102,7 +110,7 @@ const albumReducer = (state = initialState, action) => {
             };
 
         case "SORT_ALBUMS_RELEASE_DATE_ASC":
-            var newItems = state.items.sort((a, b) => {
+            var newItems = state.originalItems.slice(0).sort((a, b) => {
                 a = parseInt(moment(a['im:releaseDate']['label']).format('YYYY'));
                 b = parseInt(moment(b['im:releaseDate']['label']).format('YYYY'));
                 return compareAsc(a, b);
@@ -114,7 +122,7 @@ const albumReducer = (state = initialState, action) => {
             };
 
         case "SORT_ALBUMS_RELEASE_DATE_DESC":
-            var newItems = state.items.sort((a, b) => {
+            var newItems = state.originalItems.slice(0).sort((a, b) => {
                 a = parseInt(moment(a['im:releaseDate']['label']).format('YYYY'));
                 b = parseInt(moment(b['im:releaseDate']['label']).format('YYYY'));
                 return compareDesc(a, b);
@@ -123,6 +131,22 @@ const albumReducer = (state = initialState, action) => {
                 ...state,
                 items: newItems,
                 modal: false
+            };
+
+        case 'SORT_ALBUMS_REMOVE':
+            return {
+                ...state,
+                items: state.originalItems,
+                modal: false
+            };
+
+        case "SEARCH_ALBUMS":
+            var newItems = titleSearch(state.originalItems.slice(0), action.payload);
+
+            return {
+                ...state,
+                searchQuery: action.payload,
+                items: newItems
             };
 
         default:

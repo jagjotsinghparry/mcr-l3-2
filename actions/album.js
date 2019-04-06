@@ -8,7 +8,9 @@ import {
     SORT_ALBUMS_ARTIST_ASC,
     SORT_ALBUMS_ARTIST_DESC,
     SORT_ALBUMS_RELEASE_DATE_ASC,
-    SORT_ALBUMS_RELEASE_DATE_DESC
+    SORT_ALBUMS_RELEASE_DATE_DESC,
+    SORT_ALBUMS_REMOVE,
+    SEARCH_ALBUMS
 } from './types';
 
 export const loadAlbums = (dispatch) => {
@@ -51,6 +53,19 @@ export const sortAlbums = (attribute, direction, dispatch) => {
                 dispatch({type: SORT_ALBUMS_RELEASE_DATE_DESC});
             }
             break;
+    }
+};
+
+export const removeSort = () => {
+    return {
+        type: SORT_ALBUMS_REMOVE
+    }
+};
+
+export const searchAlbums = (query) => {
+    return {
+        type: SEARCH_ALBUMS,
+        payload: query
     }
 };
 
