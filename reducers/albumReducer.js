@@ -5,7 +5,8 @@ const initialState = {
     loading: false,
     modal: false,
     originalItems: [],
-    searchQuery: ''
+    searchQuery: '',
+    error: null
 };
 
 function compareAsc(a, b) {
@@ -36,7 +37,8 @@ const albumReducer = (state = initialState, action) => {
         case "LOAD_ALBUMS_BEGIN":
             return {
                 ...state,
-                loading: true
+                loading: true,
+                error: null
             };
 
         case "LOAD_ALBUMS_SUCCESS":
